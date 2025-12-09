@@ -41,11 +41,9 @@ function verifyIfExistsAccountID(request, response, next) {
 
 }
 
-app.post("/account", (request, response) => {
-    const { name, cpf } = request.body;
-
-    const customerAlreadyExists = customers.some((customer) => customer.cpf === cpf);
-
+function verifyIfAccountAlreadyExists(request, response, next) {
+    const { cpf } = request;
+    const customerAlreadyExists = customers.some(customer => customer.cpf === cpf);
     if (customerAlreadyExists) {
         return response.status(403).json(
             {
@@ -53,6 +51,12 @@ app.post("/account", (request, response) => {
             }
         );
     }
+}
+
+app.post("/account", (request, response) => {
+    const { name, cpf } = request.body;
+
+    const customerAlreadyExists = customers.some((customer) => customer.cpf === cpf);
     customers.push({
         cpf,
         name,
@@ -114,7 +118,7 @@ app.get("/accounts", (request, response) => {
 
 app.get("/account/:id", verifyIfExistsAccountID, (request, response) => {
 
-    const {customer} = request;
+    const { customer } = request;
 
     return response.json(customer);
 })
